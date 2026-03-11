@@ -18,7 +18,7 @@ func main() {
 	clusterPort := envInt("CLUSTER_PORT", 0)
 	workerPassword := mustEnv("WORKER_PASSWORD")
 	clusterPassword := envOr("CLUSTER_PASSWORD", "")
-	remotePassword := envOr("REMOTE_PASSWORD", "simplechat-remote")
+	remotePassword := envOr("REMOTE_PASSWORD", "remote")
 
 	var clusterPeers []string
 	if v := os.Getenv("CLUSTER_PEERS"); v != "" {

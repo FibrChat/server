@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"net"
 	"time"
 
 	natsserver "github.com/nats-io/nats-server/v2/server"
@@ -53,6 +54,11 @@ func Start(o Options) (*Server, error) {
 	}
 
 	return &Server{ns: ns, Opts: o}, nil
+}
+
+// InProcessConn returns an in-process connection to the NATS server
+func (s *Server) InProcessConn() (net.Conn, error) {
+	return s.ns.InProcessConn()
 }
 
 // Stop gracefully stops the NATS server.
