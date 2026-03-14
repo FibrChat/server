@@ -15,9 +15,6 @@ func (h *authHandler) Check(client natsserver.ClientAuthentication) bool {
 	case "worker":
 		return h.handleWorker(client, o.Password)
 
-	case "remote":
-		return h.handleRemote(client, o.Password)
-
 	default:
 		return h.handleClient(client, o.Username, o.Password)
 	}
@@ -45,27 +42,10 @@ func (h *authHandler) handleWorker(client natsserver.ClientAuthentication, passw
 	return true
 }
 
-// handleRemote registers a remote server client (send only)
-func (h *authHandler) handleRemote(client natsserver.ClientAuthentication, password string) bool {
-	if password != h.remotePassword {
-		return false
-	}
-
-	client.RegisterUser(&natsserver.User{
-		Username: "remote",
-		Password: h.remotePassword,
-		Permissions: &natsserver.Permissions{
-			Publish:   &natsserver.SubjectPermission{Allow: []string{subject.Remote}},
-			Subscribe: &natsserver.SubjectPermission{Allow: []string{}},
-		},
-	})
-
-	return true
-}
-
 // handleClient registers a regular client
 func (h *authHandler) handleClient(client natsserver.ClientAuthentication, username, password string) bool {
-	// Temporary auth until implementation
+	// TODO: Santize user inputs and implement proper auth
+
 	if username == "" || password != "password" {
 		return false
 	}
@@ -73,10 +53,11 @@ func (h *authHandler) handleClient(client natsserver.ClientAuthentication, usern
 	client.RegisterUser(&natsserver.User{
 		Username: username,
 		Permissions: &natsserver.Permissions{
-			Publish: &natsserver.SubjectPermission{Allow: []string{subject.Send}},
+			Publish: &natsserver.SubjectPermission{Allow: []string{subject.PublishSubject}},
 			Subscribe: &natsserver.SubjectPermission{Allow: []string{
-				subject.DM(username),
-				subject.Inbox(username) + ".>",
+				subject.PresenceSubject,
+				subject.Inbox(username),
+				subject.NATSInbox(username) + ".>",
 			}},
 		},
 	})

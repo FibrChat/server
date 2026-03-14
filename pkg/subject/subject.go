@@ -1,14 +1,19 @@
 package subject
 
-const Send = "chat.send"
-const Remote = "chat.remote"
+const (
+	PresenceSubject = "presence"
+	PublishSubject  = "publish"
 
-// DM returns the NATS subject for a user's direct messages
-func DM(username string) string {
-	return "chat.dm." + username
+	InboxPrefix     = "inbox"
+	NATSInboxPrefix = "_INBOX"
+)
+
+// Inbox returns the subject for a user's inbox
+func Inbox(username string) string {
+	return InboxPrefix + "." + username
 }
 
-// Inbox returns the NATS subject for a user's inbox
-func Inbox(username string) string {
-	return "_INBOX." + username
+// NATSInbox returns the NATS reply inbox subject
+func NATSInbox(username string) string {
+	return NATSInboxPrefix + "." + username
 }

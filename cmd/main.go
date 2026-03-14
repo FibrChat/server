@@ -18,7 +18,6 @@ func main() {
 	clusterPort := envInt("CLUSTER_PORT", 0)
 	workerPassword := mustEnv("WORKER_PASSWORD")
 	clusterPassword := envOr("CLUSTER_PASSWORD", "")
-	remotePassword := envOr("REMOTE_PASSWORD", "remote")
 
 	var clusterPeers []string
 	if v := os.Getenv("CLUSTER_PEERS"); v != "" {
@@ -36,7 +35,6 @@ func main() {
 		ClusterPeers:    clusterPeers,
 		ClusterPassword: clusterPassword,
 		WorkerPassword:  workerPassword,
-		RemotePassword:  remotePassword,
 	})
 	if err != nil {
 		log.Fatalf("Failed to start server: %v", err)

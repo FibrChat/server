@@ -18,24 +18,20 @@ func Start(o Options) (*Server, error) {
 		return nil, fmt.Errorf("WorkerPassword is required")
 	}
 
-	if o.RemotePassword == "" {
-		return nil, fmt.Errorf("RemotePassword is required")
-	}
-
 	if o.Port == 0 {
 		o.Port = 4222
 	}
 
 	opts := &natsserver.Options{
-		ServerName: fmt.Sprintf("worker-%d", time.Now().UTC().UnixMilli()),
-		Routes:     o.clusterRoutes(),
-		Cluster:    o.clusterOpts(),
-		Port:       o.Port + 1,
-		NoLog:      true,
-		NoSigs:     true,
+		ServerName:    fmt.Sprintf("server-%d", time.Now().UTC().UnixMilli()),
+		SystemAccount: natsserver.DEFAULT_GLOBAL_ACCOUNT, // Workaround for getting user status
+		Routes:        o.clusterRoutes(),
+		Cluster:       o.clusterOpts(),
+		Port:          o.Port + 1,
+		NoLog:         true,
+		NoSigs:        true,
 		CustomClientAuthentication: &authHandler{
 			workerPassword: o.WorkerPassword,
-			remotePassword: o.RemotePassword,
 		},
 		Websocket: natsserver.WebsocketOpts{
 			Port:  o.Port,
@@ -53,7 +49,10 @@ func Start(o Options) (*Server, error) {
 		return nil, fmt.Errorf("NATS failed to start within 10s")
 	}
 
-	return &Server{ns: ns, Opts: o}, nil
+	return &Server{
+		ns:   ns,
+		Opts: o,
+	}, nil
 }
 
 // InProcessConn returns an in-process connection to the NATS server

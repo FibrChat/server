@@ -11,7 +11,6 @@ type Options struct {
 	ClusterPeers    []string
 	ClusterPassword string
 	WorkerPassword  string
-	RemotePassword  string
 }
 
 type Server struct {
@@ -21,5 +20,4 @@ type Server struct {
 
 type authHandler struct {
 	workerPassword string
-	remotePassword string
 }
