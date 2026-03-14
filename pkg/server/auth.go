@@ -53,7 +53,7 @@ func (h *authHandler) handleClient(client natsserver.ClientAuthentication, usern
 	client.RegisterUser(&natsserver.User{
 		Username: username,
 		Permissions: &natsserver.Permissions{
-			Publish: &natsserver.SubjectPermission{Allow: []string{subject.PublishSubject}},
+			Publish: &natsserver.SubjectPermission{Allow: []string{subject.PublishSubject, subject.UsersSubject}},
 			Subscribe: &natsserver.SubjectPermission{Allow: []string{
 				subject.PresenceSubject,
 				subject.Inbox(username),
